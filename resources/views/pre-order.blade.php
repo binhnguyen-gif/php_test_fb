@@ -5,6 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pre-order food from restaurants</title>
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -19,40 +20,74 @@
     <input class="radio" id="four" name="group" type="radio">
 
     <div class="tabs">
-        <label class="tab" id="one-tab" for="one">Step1</label>
-        <label class="tab" id="two-tab" for="two">Step2</label>
-        <label class="tab" id="three-tab" for="three">Step3</label>
-        <label class="tab" id="four-tab" for="four">Review</label>
+        <label class="tab" id="one-tab" >Step1</label>
+        <label class="tab" id="two-tab" >Step2</label>
+        <label class="tab" id="three-tab" >Step3</label>
+        <label class="tab" id="four-tab" >Review</label>
     </div>
+{{--    <div class="tabs">--}}
+{{--        <label class="tab" id="one-tab" for="one">Step1</label>--}}
+{{--        <label class="tab" id="two-tab" for="two">Step2</label>--}}
+{{--        <label class="tab" id="three-tab" for="three">Step3</label>--}}
+{{--        <label class="tab" id="four-tab" for="four">Review</label>--}}
+{{--    </div>--}}
 
     <div class="panels">
         <div class="panel" id="one-panel">
             <div class="panel-title">
-                <form action="">
-                    <div>
+                <form method="POST" id="meal_form">
+                    @csrf
+                    <div class="panel__inner-item">
                         <label for="">Please Select a meal</label>
                         <br>
                         <label>
-                            <select name="food" id="option-food">
-                                <option value=""></option>
+                            <select name="meal" id="meal">
+                                @foreach($listMeal as $meal)
+                                    <option value="{{ $meal }}">{{ $meal }}</option>
+                                @endforeach
                             </select>
                         </label>
                     </div>
-                    <div>
-                        <label for="">Please Enter of people</label>
+                    <div class="panel__inner-item">
+                        <label for="">Please Enter Number of people</label>
                         <br>
                         <input type="number" name="number" id="" max="10" value="1">
                     </div>
+                    <a href="#" id="meal_sb" class="btn-meal">Next</a>
                 </form>
             </div>
         </div>
         <div class="panel" id="two-panel">
             <div class="panel-title">Step2</div>
-            <p>Content2</p>
+            <form method="POST" id="restaurant_form">
+                @csrf
+                <div class="panel__inner-item">
+                    <label for="">Please Select a Restaurant</label>
+                    <br>
+                    <label>
+                        <select name="restaurant" id="restaurant">
+                        </select>
+                    </label>
+                </div>
+                <a href="#" class="btn-previous">Previous</a>
+                <a href="#" id="restaurant_sb" class="btn-meal">Next</a>
+            </form>
         </div>
         <div class="panel" id="three-panel">
             <div class="panel-title">Step3</div>
-            <p>Content3</p>
+            <form method="POST" id="dish_form">
+                @csrf
+                <div class="panel__inner-item">
+                    <label for="">Please Select a Restaurant</label>
+                    <br>
+                    <label>
+                        <select name="dish" id="dish">
+                        </select>
+                    </label>
+                </div>
+                <a href="#" class="btn-previous">Previous</a>
+                <a href="#" id="dish_sb" class="btn-meal">Next</a>
+            </form>
         </div>
         <div class="panel" id="four-panel">
             <div class="panel-title">Review</div>
@@ -60,51 +95,74 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
 <script>
-    loadFood();
-    async function loadFood() {
-        try {
-            const response = await fetch('{{ asset('data/dishes.json') }}');
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-            const food = await response.json();
-            let option = document.getElementById('option-food');
-            option.innerHTML = '';
+        });
 
-            food.dishes.forEach(function (dish) {
-                let optionElement = document.createElement('option');
-                optionElement.textContent = dish.name;
-                optionElement.value = dish.id;
-                option.appendChild(optionElement);
+        $("#meal_sb").on("click", function () {
+            let meal_form = $('form#meal_form');
+            let formData = new FormData(meal_form[0]);
+            let url = '{{ route('step2') }}';
+            callAjax(url, formData, 'restaurant');
+            $('#one').prop('checked', false);
+            $('#two').attr( 'checked', 'checked' );
+        });
+
+        $("#restaurant_sb").on("click", function () {
+            let restaurant_form = $('form#restaurant_form');
+            let formData = new FormData(restaurant_form[0]);
+            formData.append('meal', $('#meal').val());
+            let url = '{{ route('step3') }}';
+            callAjax(url, formData, 'dish');
+            $('#two').prop('checked', false);
+            $('#three').attr( 'checked', 'checked' );
+        });
+
+        $("#dish_sb").on("click", function () {
+
+        });
+
+        function callAjax(url, formData, form_id) {
+            $.ajax({
+                method: 'POST',
+                url: url,
+                enctype: 'multipart/form-data',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response)
+                    if (response.code === 200) {
+                        setData(form_id, response.data);
+
+                    }
+                },
+                error: function (data) {
+
+                },
+                complete: function (data) {
+                }
             });
-        } catch (error) {
-            console.error('Error loading food data:', error);
         }
-    }
 
-    async function loadListRestaurant() {
-        try {
-            const response = await fetch('{{ asset('data/dishes.json') }}');
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
-            }
-            const food = await response.json();
-            let option = document.getElementById('option-food');
-            option.innerHTML = '';
 
-            food.dishes.forEach(function (dish) {
-                let optionElement = document.createElement('option');
-                optionElement.textContent = dish.name;
-                optionElement.value = dish.id;
-                option.appendChild(optionElement);
+        function setData(form_id, data) {
+            let option = '';
+            // let meal = `<input type="hidden" name="meal" value="${data[form_id]}">`;
+            let formId = $('#'+form_id);
+            $.each(data[form_id], function (key, item) {
+                option += `<option value="${item}">${item}</option>`
             });
-        } catch (error) {
-            console.error('Error loading food data:', error);
+            // formId.parent().append();
+            formId.append(option);
         }
-    }
-
-
+    });
 </script>
 </body>
 </html>

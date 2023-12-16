@@ -69,3 +69,27 @@ h2 {
     color: #000;
     border-top: 3px solid #32557f;
 }
+
+.panel__inner-item {
+    margin: 35px auto;
+}
+
+.panel__inner-item select {
+    padding: 4px 24px;
+}
+
+.btn-meal {
+    display: inline-block;
+    float: right;
+    padding: 4px 12px;
+}
+
+.btn-previous {
+    float: left;
+    display: inline-block;
+    padding: 4px 12px;
+}
+
+/*.panel__inner-item input[name='number'] {*/
+/*    padding: 4px 0;*/
+/*}*/
