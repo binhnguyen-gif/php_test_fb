@@ -11,91 +11,128 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
 <body>
-<h2>Pre-order food from restaurants</h2>
-<br>
-<div class="warpper">
-    <input class="radio" id="one" name="group" type="radio" checked>
-    <input class="radio" id="two" name="group" type="radio">
-    <input class="radio" id="three" name="group" type="radio">
-    <input class="radio" id="four" name="group" type="radio">
 
-    <div class="tabs">
-        <label class="tab" id="one-tab" >Step1</label>
-        <label class="tab" id="two-tab" >Step2</label>
-        <label class="tab" id="three-tab" >Step3</label>
-        <label class="tab" id="four-tab" >Review</label>
+<div class="container">
+    <header>Pre-order food from restaurants</header>
+    <div class="progress-bar">
+        <div class="step">
+            <p>Step1</p>
+            <div class="bullet">
+                <span>1</span>
+            </div>
+            <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+            <p>Step2</p>
+            <div class="bullet">
+                <span>2</span>
+            </div>
+            <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+            <p>Step3</p>
+            <div class="bullet">
+                <span>3</span>
+            </div>
+            <div class="check fas fa-check"></div>
+        </div>
+        <div class="step">
+            <p>Review</p>
+            <div class="bullet">
+                <span>4</span>
+            </div>
+            <div class="check fas fa-check"></div>
+        </div>
     </div>
-{{--    <div class="tabs">--}}
-{{--        <label class="tab" id="one-tab" for="one">Step1</label>--}}
-{{--        <label class="tab" id="two-tab" for="two">Step2</label>--}}
-{{--        <label class="tab" id="three-tab" for="three">Step3</label>--}}
-{{--        <label class="tab" id="four-tab" for="four">Review</label>--}}
-{{--    </div>--}}
-
-    <div class="panels">
-        <div class="panel" id="one-panel">
-            <div class="panel-title">
-                <form method="POST" id="meal_form">
-                    @csrf
+    <div class="form-outer">
+        <form action="#" id="form_order" method="POST">
+            <div class="page slide-page">
+                @csrf
+                <div class="panel__inner">
                     <div class="panel__inner-item">
-                        <label for="">Please Select a meal</label>
-                        <br>
-                        <label>
-                            <select name="meal" id="meal">
-                                @foreach($listMeal as $meal)
-                                    <option value="{{ $meal }}">{{ $meal }}</option>
-                                @endforeach
-                            </select>
-                        </label>
+                        <label class="label" for="meal">Please Select a meal</label>
+                        <select name="meal" id="meal">
+                            @foreach($listMeal as $meal)
+                                <option value="{{ $meal }}">{{ $meal }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="panel__inner-item">
-                        <label for="">Please Enter Number of people</label>
-                        <br>
+                        <label class="label" for="number">Please Enter Number of people</label>
                         <input type="number" name="number" id="" max="10" value="1">
                     </div>
-                    <a href="#" id="meal_sb" class="btn-meal">Next</a>
-                </form>
+                </div>
+                <div class="field">
+                    <button class="firstNext next">Next</button>
+                </div>
             </div>
-        </div>
-        <div class="panel" id="two-panel">
-            <div class="panel-title">Step2</div>
-            <form method="POST" id="restaurant_form">
+
+            <div class="page">
                 @csrf
-                <div class="panel__inner-item">
-                    <label for="">Please Select a Restaurant</label>
-                    <br>
-                    <label>
+                <div class="panel__inner">
+                    <div class="panel__inner-item">
+                        <label class="label" for="">Please Select a Restaurant</label>
                         <select name="restaurant" id="restaurant">
                         </select>
-                    </label>
+                    </div>
                 </div>
-                <a href="#" class="btn-previous">Previous</a>
-                <a href="#" id="restaurant_sb" class="btn-meal">Next</a>
-            </form>
-        </div>
-        <div class="panel" id="three-panel">
-            <div class="panel-title">Step3</div>
-            <form method="POST" id="dish_form">
-                @csrf
-                <div class="panel__inner-item">
-                    <label for="">Please Select a Restaurant</label>
-                    <br>
-                    <label>
+                <div class="field btns">
+                    <button class="prev-1 prev">Previous</button>
+                    <button class="next-1 next">Next</button>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="panel__inner">
+                    <div class="panel__inner-item">
+                        <label class="label" for="">Please Select a Restaurant</label>
                         <select name="dish" id="dish">
                         </select>
-                    </label>
+                    </div>
                 </div>
-                <a href="#" class="btn-previous">Previous</a>
-                <a href="#" id="dish_sb" class="btn-meal">Next</a>
-            </form>
-        </div>
-        <div class="panel" id="four-panel">
-            <div class="panel-title">Review</div>
-            <p>Content3</p>
-        </div>
+                <div class="field btns">
+                    <button class="prev-2 prev">Previous</button>
+                    <button class="next-2 next">Next</button>
+                </div>
+            </div>
+            <div class="page">
+                <div class="panel__inner">
+                    <table>
+                        <tr>
+                            <td>Meal</td>
+                            <td>Lunch</td>
+                        </tr>
+                        <tr>
+                            <td>No. of. People</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>Restaurant</td>
+                            <td>Restaurant S</td>
+                        </tr>
+                        <tr>
+                            <td>Dishes</td>
+                            <td>
+                                <div class="panel__inner-desc">
+                                    <p>Dish A - 1</p>
+                                    <p>Dish A - 1</p>
+                                    <p>Dish A - 1</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="field btns">
+                    <button class="prev-3 prev">Previous</button>
+                    <button class="submit">Submit</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/script.js') }}"></script>
 
 <script>
     $(document).ready(function () {
@@ -105,30 +142,130 @@
             }
         });
 
-        $("#meal_sb").on("click", function () {
-            let meal_form = $('form#meal_form');
-            let formData = new FormData(meal_form[0]);
+        const slidePage = $(".slide-page");
+        const nextBtnFirst = $(".firstNext");
+        const prevBtnSec = $(".prev-1");
+        const nextBtnSec = $(".next-1");
+        const prevBtnThird = $(".prev-2");
+        const nextBtnThird = $(".next-2");
+        const prevBtnFourth = $(".prev-3");
+        const submitBtn = $(".submit");
+        const progressText = $(".step p");
+        const progressCheck = $(".step .check");
+        const bullet = $(".step .bullet");
+        let current = 1;
+
+        nextBtnFirst.on("click", function (event) {
+            event.preventDefault();
             let url = '{{ route('step2') }}';
-            callAjax(url, formData, 'restaurant');
-            $('#one').prop('checked', false);
-            $('#two').attr( 'checked', 'checked' );
+            let data = {meal: $('#meal').val()};
+            callAjax(url, data, 'restaurant');
         });
 
-        $("#restaurant_sb").on("click", function () {
-            let restaurant_form = $('form#restaurant_form');
-            let formData = new FormData(restaurant_form[0]);
-            formData.append('meal', $('#meal').val());
+        function nextFirst() {
+            slidePage.css("margin-left", "-25%");
+            bullet.eq(current - 1).addClass("active");
+            progressCheck.eq(current - 1).addClass("active");
+            progressText.eq(current - 1).addClass("active");
+            current += 1;
+        }
+
+        nextBtnSec.on("click", function (event) {
+            event.preventDefault();
             let url = '{{ route('step3') }}';
-            callAjax(url, formData, 'dish');
-            $('#two').prop('checked', false);
-            $('#three').attr( 'checked', 'checked' );
+            let data = {meal: $('#meal').val(), restaurant: $('#restaurant').val()};
+            callAjax(url, data, 'dish');
         });
 
-        $("#dish_sb").on("click", function () {
+        function nextSec() {
+            slidePage.css("margin-left", "-50%");
+            bullet.eq(current - 1).addClass("active");
+            progressCheck.eq(current - 1).addClass("active");
+            progressText.eq(current - 1).addClass("active");
+            current += 1;
+        }
 
+        nextBtnThird.on("click", function (event) {
+            event.preventDefault();
+            {{--let url = '{{ route('step3') }}';--}}
+            {{--let data = {meal: $('#meal').val(), restaurant: $('#restaurant').val()};--}}
+            {{--callAjax(url, data, 'dish');--}}
+                nextThird();
         });
 
-        function callAjax(url, formData, form_id) {
+        function nextThird() {
+            slidePage.css("margin-left", "-75%");
+            bullet.eq(current - 1).addClass("active");
+            progressCheck.eq(current - 1).addClass("active");
+            progressText.eq(current - 1).addClass("active");
+            current += 1;
+        }
+
+        submitBtn.on("click", function () {
+            bullet.eq(current - 1).addClass("active");
+            progressCheck.eq(current - 1).addClass("active");
+            progressText.eq(current - 1).addClass("active");
+            current += 1;
+            setTimeout(function () {
+                alert("Your Form Successfully Signed up");
+                location.reload();
+            }, 800);
+        });
+
+        prevBtnSec.on("click", function (event) {
+            event.preventDefault();
+            slidePage.css("margin-left", "0%");
+            bullet.eq(current - 2).removeClass("active");
+            progressCheck.eq(current - 2).removeClass("active");
+            progressText.eq(current - 2).removeClass("active");
+            current -= 1;
+        });
+
+        prevBtnThird.on("click", function (event) {
+            event.preventDefault();
+            slidePage.css("margin-left", "-25%");
+            bullet.eq(current - 2).removeClass("active");
+            progressCheck.eq(current - 2).removeClass("active");
+            progressText.eq(current - 2).removeClass("active");
+            current -= 1;
+        });
+
+        prevBtnFourth.on("click", function (event) {
+            event.preventDefault();
+            slidePage.css("margin-left", "-50%");
+            bullet.eq(current - 2).removeClass("active");
+            progressCheck.eq(current - 2).removeClass("active");
+            progressText.eq(current - 2).removeClass("active");
+            current -= 1;
+        });
+
+        function callAjax(url, data, form_id) {
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response)
+                    if (response.code === 200) {
+                        setData(form_id, response.data);
+                        if(form_id === 'restaurant') {
+                            nextFirst();
+                        }else if(form_id === 'dish') {
+                            nextSec();
+                        }
+                    }
+                },
+                error: function (data) {
+                },
+                complete: function (data) {
+                }
+            });
+        }
+
+        function viewData() {
+            let form_order = $('form#form_order');
+            let formData = new FormData(form_order[0]);
             $.ajax({
                 method: 'POST',
                 url: url,
@@ -139,7 +276,6 @@
                 success: function (response) {
                     console.log(response)
                     if (response.code === 200) {
-                        setData(form_id, response.data);
 
                     }
                 },
@@ -151,16 +287,12 @@
             });
         }
 
-
         function setData(form_id, data) {
             let option = '';
-            // let meal = `<input type="hidden" name="meal" value="${data[form_id]}">`;
-            let formId = $('#'+form_id);
             $.each(data[form_id], function (key, item) {
                 option += `<option value="${item}">${item}</option>`
             });
-            // formId.parent().append();
-            formId.append(option);
+            $('#' + form_id).append(option);
         }
     });
 </script>
