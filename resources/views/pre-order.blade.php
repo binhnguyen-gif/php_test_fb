@@ -9,6 +9,9 @@
     <title>Pre-order food from restaurants</title>
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
 
@@ -59,16 +62,14 @@
                     </div>
                     <div class="panel__inner-item">
                         <label class="label" for="number">Please Enter Number of people</label>
-                        <input type="number" name="number" id="" max="10" value="1">
+                        <input type="number" name="number" id="number" min="1" max="10" value="1">
                     </div>
                 </div>
                 <div class="field">
                     <button class="firstNext next">Next</button>
                 </div>
             </div>
-
             <div class="page">
-                @csrf
                 <div class="panel__inner">
                     <div class="panel__inner-item">
                         <label class="label" for="">Please Select a Restaurant</label>
@@ -84,11 +85,20 @@
 
             <div class="page">
                 <div class="panel__inner">
-                    <div class="panel__inner-item">
-                        <label class="label" for="">Please Select a Restaurant</label>
-                        <select name="dish" id="dish">
-                        </select>
+                    <div class="item-add">
+                        <div class="add-title">
+                            <p>Please Select a Dish</p>
+                            <p>Please enter no. of servings</p>
+                        </div>
+                        <div class="add-desc">
+                            <select name="dish[]" id="dish" class="dish1">
+                            </select>
+                            <input type="number" name="number_serving[]" class="serving1" min="1" max="10" value="1">
+                        </div>
                     </div>
+                    <a href="#" class="btn-add">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </a>
                 </div>
                 <div class="field btns">
                     <button class="prev-2 prev">Previous</button>
@@ -100,23 +110,21 @@
                     <table>
                         <tr>
                             <td>Meal</td>
-                            <td>Lunch</td>
+                            <td class="view-meal"></td>
                         </tr>
                         <tr>
                             <td>No. of. People</td>
-                            <td>3</td>
+                            <td class="view-people"></td>
                         </tr>
                         <tr>
                             <td>Restaurant</td>
-                            <td>Restaurant S</td>
+                            <td class="view-restaurant"></td>
                         </tr>
                         <tr>
                             <td>Dishes</td>
-                            <td>
+                            <td class="view-dish">
                                 <div class="panel__inner-desc">
-                                    <p>Dish A - 1</p>
-                                    <p>Dish A - 1</p>
-                                    <p>Dish A - 1</p>
+
                                 </div>
                             </td>
                         </tr>
@@ -130,10 +138,8 @@
         </form>
     </div>
 </div>
-
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/script.js') }}"></script>
-
+<script src="{{ asset('assets/js/alert.js') }}"></script>
 <script>
     $(document).ready(function () {
         $.ajaxSetup({
@@ -154,11 +160,13 @@
         const progressCheck = $(".step .check");
         const bullet = $(".step .bullet");
         let current = 1;
+        const progressAdd = $(".btn-add");
+        let optionDish = '';
 
         nextBtnFirst.on("click", function (event) {
             event.preventDefault();
             let url = '{{ route('step2') }}';
-            let data = {meal: $('#meal').val()};
+            let data = {meal: $('#meal').val(), number: $('#number').val()};
             callAjax(url, data, 'restaurant');
         });
 
@@ -187,10 +195,7 @@
 
         nextBtnThird.on("click", function (event) {
             event.preventDefault();
-            {{--let url = '{{ route('step3') }}';--}}
-            {{--let data = {meal: $('#meal').val(), restaurant: $('#restaurant').val()};--}}
-            {{--callAjax(url, data, 'dish');--}}
-                nextThird();
+            viewData();
         });
 
         function nextThird() {
@@ -249,11 +254,13 @@
                     console.log(response)
                     if (response.code === 200) {
                         setData(form_id, response.data);
-                        if(form_id === 'restaurant') {
+                        if (form_id === 'restaurant') {
                             nextFirst();
-                        }else if(form_id === 'dish') {
+                        } else if (form_id === 'dish') {
                             nextSec();
                         }
+                    } else if (response.code === 422) {
+                        danger(response.msg.message);
                     }
                 },
                 error: function (data) {
@@ -268,7 +275,7 @@
             let formData = new FormData(form_order[0]);
             $.ajax({
                 method: 'POST',
-                url: url,
+                url: '{{ route('review') }}',
                 enctype: 'multipart/form-data',
                 data: formData,
                 processData: false,
@@ -276,7 +283,10 @@
                 success: function (response) {
                     console.log(response)
                     if (response.code === 200) {
-
+                        setDataView(response.data);
+                        nextThird();
+                    } else if (response.code === 422) {
+                        danger(response.msg.message);
                     }
                 },
                 error: function (data) {
@@ -287,14 +297,87 @@
             });
         }
 
+        function setDataView(data) {
+            let listDish = '';
+            $.each(data.dishes, function (key, item) {
+                listDish += `<p>${key} - ${item}</p>`
+            });
+
+            $('.view-meal').html(`<p>${data.meal}</p>`);
+            $('.view-people').html(`<p>${data.number}</p>`);
+            $('.view-restaurant').html(`<p>${data.restaurant}</p>`);
+            $('.view-dish .panel__inner-desc').html(listDish);
+        }
+
+
+
         function setData(form_id, data) {
             let option = '';
             $.each(data[form_id], function (key, item) {
                 option += `<option value="${item}">${item}</option>`
             });
             $('#' + form_id).append(option);
+            optionDish = option;
+        }
+
+        progressAdd.on('click', function(event) {
+            event.preventDefault();
+            addOption();
+        });
+
+        function addOption() {
+            let html = ` <div class="add-desc">
+                            <select name="dish[]" id="dish" class="dish">
+                                ${optionDish}
+                            </select>
+                            <input type="number" name="number_serving[]" class="serving" min="1" max="10" value="1">
+                        </div>`;
+
+            $('.item-add').append(html);
         }
     });
+
+
+    function info(message) {
+        ava({
+            icon: 'info',
+            text: message,
+            btnText: 'Okay',
+            progressBar: true,
+            toast: false,
+        });
+    }
+
+    function success(message) {
+        ava({
+            icon: 'success',
+            text: message,
+            btnText: 'Okay',
+            progressBar: true,
+            toast: false,
+        });
+    }
+
+    function danger(message) {
+        ava({
+            icon: 'danger',
+            text: message,
+            btnText: 'Okay',
+            progressBar: true,
+            toast: false,
+        });
+    }
+
+    function white(message) {
+        ava({
+            icon: 'none',
+            text: message,
+            btnText: 'Okay',
+            progressBar: true,
+            toast: false,
+            timer: 8000
+        });
+    }
 </script>
 </body>
 </html>

@@ -21,4 +21,4 @@ use App\Http\Controllers\HomeController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/', [HomeController::class, 'step2'])->name('step2');
 Route::post('/step3', [HomeController::class, 'step3'])->name('step3');
-Route::post('/step4', [HomeController::class, 'step2'])->name('step4');
+Route::post('/review', [HomeController::class, 'review'])->name('review');
