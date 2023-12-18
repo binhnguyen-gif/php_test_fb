@@ -214,6 +214,8 @@ form .page .btns button.next {
 
 .panel__inner {
     min-height: 200px;
+    height: 250px;
+    overflow: scroll;
 }
 
 .panel__inner table {
@@ -560,14 +562,20 @@ table td {
     display: flex;
     align-items: center;
     align-content: space-between;
+    margin-bottom: 4px;
 }
 
 .add-desc select{
     margin-right: 4px;
+    height: 43px !important;
 }
 
 .item-add .panel__inner-item {
     width: 50%;
+}
+
+.item-add {
+    overflow: scroll;
 }
 
 .item-add select, .item-add input {
@@ -581,6 +589,8 @@ table td {
     display: inline-block;
     float: left;
     margin: 6px 0;
+    text-decoration: none;
+    color: #000;
 }
 
 .btn-add i {

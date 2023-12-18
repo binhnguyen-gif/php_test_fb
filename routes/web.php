@@ -22,3 +22,4 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/', [HomeController::class, 'step2'])->name('step2');
 Route::post('/step3', [HomeController::class, 'step3'])->name('step3');
 Route::post('/review', [HomeController::class, 'review'])->name('review');
+Route::post('/order', [HomeController::class, 'order'])->name('order');

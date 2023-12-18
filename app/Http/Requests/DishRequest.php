@@ -49,9 +49,13 @@ class DishRequest extends FormRequest
     {
         return [
             'required' => ':attribute không được để trống.',
-            'number_serving.in' => ':attribute không được vượt quá 10.',
+            'number_serving.*.in' => ':attribute không được vượt quá 10.',
             'number.in' => ':attribute không được vượt quá 10.',
             'integer' => ':attribute phải là số.',
+            'number_serving.*.required' => 'Trường :attribute là bắt buộc',
+            'dish.*.required' => 'Trường :attribute là bắt buộc',
+            'dish.*.string' => 'Trường :attribute phải thuộc kiểu chuỗi',
+            'number_serving.*.integer' => 'Trường :attribute phải là số nguyên',
         ];
     }
 

@@ -162,6 +162,7 @@
         let current = 1;
         const progressAdd = $(".btn-add");
         let optionDish = '';
+        let countDish = 0;
 
         nextBtnFirst.on("click", function (event) {
             event.preventDefault();
@@ -195,7 +196,8 @@
 
         nextBtnThird.on("click", function (event) {
             event.preventDefault();
-            viewData();
+            let url = '{{ route('review') }}';
+            viewData(url);
         });
 
         function nextThird() {
@@ -206,16 +208,22 @@
             current += 1;
         }
 
-        submitBtn.on("click", function () {
+        submitBtn.on("click", function (event) {
+            event.preventDefault();
+            let url = '{{ route('order') }}';
+            viewData(url, true);
+        });
+
+        function submitForm() {
             bullet.eq(current - 1).addClass("active");
             progressCheck.eq(current - 1).addClass("active");
             progressText.eq(current - 1).addClass("active");
             current += 1;
             setTimeout(function () {
-                alert("Your Form Successfully Signed up");
+                alert("Order Success");
                 location.reload();
             }, 800);
-        });
+        }
 
         prevBtnSec.on("click", function (event) {
             event.preventDefault();
@@ -261,6 +269,8 @@
                         }
                     } else if (response.code === 422) {
                         danger(response.msg.message);
+                    }else {
+                        danger('Lỗi hệ thống vui lòng thử lại sau.');
                     }
                 },
                 error: function (data) {
@@ -270,7 +280,7 @@
             });
         }
 
-        function viewData() {
+        function viewData(url, order = null) {
             let form_order = $('form#form_order');
             let formData = new FormData(form_order[0]);
             $.ajax({
@@ -283,10 +293,16 @@
                 success: function (response) {
                     console.log(response)
                     if (response.code === 200) {
-                        setDataView(response.data);
-                        nextThird();
+                        if(!order) {
+                            setDataView(response.data);
+                            nextThird();
+                        }else {
+                            submitForm();
+                        }
                     } else if (response.code === 422) {
                         danger(response.msg.message);
+                    }else {
+                        danger('Lỗi hệ thống vui lòng thử lại sau.');
                     }
                 },
                 error: function (data) {
@@ -302,7 +318,6 @@
             $.each(data.dishes, function (key, item) {
                 listDish += `<p>${key} - ${item}</p>`
             });
-
             $('.view-meal').html(`<p>${data.meal}</p>`);
             $('.view-people').html(`<p>${data.number}</p>`);
             $('.view-restaurant').html(`<p>${data.restaurant}</p>`);
@@ -313,11 +328,17 @@
 
         function setData(form_id, data) {
             let option = '';
+            let count = 0;
             $.each(data[form_id], function (key, item) {
                 option += `<option value="${item}">${item}</option>`
+                if(form_id === 'dish') {
+                    console.log('vao');
+                    count++;
+                }
             });
-            $('#' + form_id).append(option);
+            $('#' + form_id).html(option);
             optionDish = option;
+            countDish = count;
         }
 
         progressAdd.on('click', function(event) {
@@ -326,14 +347,20 @@
         });
 
         function addOption() {
-            let html = ` <div class="add-desc">
+            let totalItem = $('.add-desc').length + 1;
+            console.log(countDish, 'total'+totalItem);
+            if(totalItem > countDish) {
+                info('Số lựa chọn không thể vượt quá số món');
+            }else {
+                let html = ` <div class="add-desc">
                             <select name="dish[]" id="dish" class="dish">
                                 ${optionDish}
                             </select>
                             <input type="number" name="number_serving[]" class="serving" min="1" max="10" value="1">
                         </div>`;
 
-            $('.item-add').append(html);
+                $('.item-add').append(html);
+            }
         }
     });
 
