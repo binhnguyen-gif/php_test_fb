@@ -14,7 +14,6 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
-
 <div class="container">
     <header>Pre-order food from restaurants</header>
     <div class="progress-bar">
@@ -269,7 +268,7 @@
                         }
                     } else if (response.code === 422) {
                         danger(response.msg.message);
-                    }else {
+                    } else {
                         danger('Lỗi hệ thống vui lòng thử lại sau.');
                     }
                 },
@@ -285,7 +284,7 @@
             let formData = new FormData(form_order[0]);
             $.ajax({
                 method: 'POST',
-                url: '{{ route('review') }}',
+                url: url,
                 enctype: 'multipart/form-data',
                 data: formData,
                 processData: false,
@@ -293,15 +292,15 @@
                 success: function (response) {
                     console.log(response)
                     if (response.code === 200) {
-                        if(!order) {
+                        if (!order) {
                             setDataView(response.data);
                             nextThird();
-                        }else {
+                        } else {
                             submitForm();
                         }
                     } else if (response.code === 422) {
                         danger(response.msg.message);
-                    }else {
+                    } else {
                         danger('Lỗi hệ thống vui lòng thử lại sau.');
                     }
                 },
@@ -324,14 +323,12 @@
             $('.view-dish .panel__inner-desc').html(listDish);
         }
 
-
-
         function setData(form_id, data) {
             let option = '';
             let count = 0;
             $.each(data[form_id], function (key, item) {
                 option += `<option value="${item}">${item}</option>`
-                if(form_id === 'dish') {
+                if (form_id === 'dish') {
                     console.log('vao');
                     count++;
                 }
@@ -341,17 +338,17 @@
             countDish = count;
         }
 
-        progressAdd.on('click', function(event) {
+        progressAdd.on('click', function (event) {
             event.preventDefault();
             addOption();
         });
 
         function addOption() {
             let totalItem = $('.add-desc').length + 1;
-            console.log(countDish, 'total'+totalItem);
-            if(totalItem > countDish) {
+            console.log(countDish, 'total' + totalItem);
+            if (totalItem > countDish) {
                 info('Số lựa chọn không thể vượt quá số món');
-            }else {
+            } else {
                 let html = ` <div class="add-desc">
                             <select name="dish[]" id="dish" class="dish">
                                 ${optionDish}
@@ -363,7 +360,6 @@
             }
         }
     });
-
 
     function info(message) {
         ava({
